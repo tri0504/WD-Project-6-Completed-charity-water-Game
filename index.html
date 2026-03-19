@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>charity: water Memory Match</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous"
+    >
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="brand-ribbon" aria-hidden="true"></div>
+
+    <main class="container py-3 py-md-4">
+        <header class="text-center mb-3 brand-header">
+            <img
+                src="img/cw_logo_horizontal.png"
+                alt="charity: water"
+                class="brand-logo mb-2"
+            >
+            <h1 class="game-title mb-2">Memory Match: Clean Water Solutions</h1>
+            <p class="lead mb-0">Match each pair to learn how safe water projects help communities thrive.</p>
+        </header>
+
+        <section class="row g-2 justify-content-center mb-3">
+            <div class="col-6 col-md-3">
+                <div class="info-card">
+                    <h2 class="info-label">Time</h2>
+                    <p id="timer" class="info-value mb-0">00:00</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="info-card">
+                    <h2 class="info-label">Score</h2>
+                    <p id="score" class="info-value mb-0">0</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center mb-3">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+                <button id="reset-game" type="button" class="btn btn-warning">Reset</button>
+            </div>
+        </section>
+
+        <section class="row justify-content-center mb-3">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div id="game-board" class="game-board" aria-label="Memory game board"></div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <div id="snippet-panel" class="snippet-panel" aria-live="polite">
+                    Match a pair to reveal a clean water solution fact.
+                </div>
+            </div>
+        </section>
+
+        <section class="row justify-content-center mt-3">
+            <div class="col-12 col-md-10 col-lg-8 text-center">
+                <img
+                    src="img/water-can-transparent.png"
+                    alt="Water can illustration"
+                    class="water-can"
+                >
+            </div>
+        </section>
+    </main>
+
+    <section id="win-celebration" class="win-celebration" aria-live="polite" hidden>
+        <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+        <div class="celebration-card">
+            <p class="celebration-badge mb-2">You did it!</p>
+            <h2 class="celebration-title mb-2">Every match is solved</h2>
+            <p class="mb-2">Final Score: <strong id="final-score">0</strong></p>
+            <p class="mb-3">Final Time: <strong id="final-time">00:00</strong></p>
+            <a
+                href="https://www.charitywater.org/our-work"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn-outline-primary w-100 mb-2"
+            >
+                Learn More
+            </a>
+            <button type="button" id="play-again" class="btn btn-warning w-100">Play Again</button>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

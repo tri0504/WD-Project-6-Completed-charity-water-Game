@@ -1,0 +1,446 @@
+/* Charity: water Brand Colors (from screenshot guide)
+
+Core:
+- Yellow:     #FFC907
+- Blue:       #003366
+- Light Blue: #77A8BB
+- Cream:      #FFF7E1
+- Black:      #1A1A1A
+
+Supporting:
+- Peach:      #FED8C1
+- Rust:       #BF6C46
+- Gray:       #CBCCD1
+
+*/
+
+:root {
+	--cw-yellow: #ffc907;
+	--cw-blue: #003366;
+	--cw-light-blue: #77a8bb;
+	--cw-cream: #fff7e1;
+	--cw-black: #1a1a1a;
+	--cw-peach: #fed8c1;
+	--cw-rust: #bf6c46;
+	--cw-gray: #cbccd1;
+	--cw-ink: #1a1a1a;
+	--board-bg: rgba(255, 247, 225, 0.92);
+}
+
+body {
+	min-height: 100vh;
+	font-family: "Avenir Next", "Montserrat", "Segoe UI", sans-serif;
+	color: var(--cw-ink);
+	background:
+		radial-gradient(circle at 12% 14%, rgba(255, 201, 7, 0.26) 0%, rgba(255, 201, 7, 0) 36%),
+		radial-gradient(circle at 86% 8%, rgba(119, 168, 187, 0.24) 0%, rgba(119, 168, 187, 0) 40%),
+		linear-gradient(180deg, #ffffff 0%, #fff7e1 58%, #f5f0e2 100%);
+}
+
+.brand-ribbon {
+	height: 18px;
+	background: linear-gradient(90deg, var(--cw-yellow) 0%, var(--cw-yellow) 52%, var(--cw-blue) 52%, var(--cw-blue) 100%);
+}
+
+.brand-header {
+	max-width: 860px;
+	margin: 0 auto;
+}
+
+.brand-logo {
+	max-width: min(350px, 74vw);
+	width: 100%;
+	height: auto;
+}
+
+
+
+.game-title {
+	font-size: clamp(1.35rem, 4vw, 2.35rem);
+	font-weight: 800;
+	letter-spacing: 0.2px;
+	color: var(--cw-blue);
+}
+
+.lead {
+	font-size: clamp(0.92rem, 2.3vw, 1.08rem);
+	color: #3c4a52;
+}
+
+.info-card {
+	background: var(--board-bg);
+	border: 2px solid rgba(0, 51, 102, 0.26);
+	border-radius: 10px;
+	padding: 0.7rem;
+	text-align: center;
+	box-shadow: 0 8px 18px rgba(26, 26, 26, 0.08);
+}
+
+.info-label {
+	font-size: 0.82rem;
+	text-transform: uppercase;
+	letter-spacing: 1.2px;
+	margin-bottom: 0.2rem;
+	color: var(--cw-blue);
+}
+
+.info-value {
+	font-size: clamp(1.15rem, 3vw, 1.55rem);
+	font-weight: 800;
+}
+
+.score-pop {
+	animation: pop 0.35s ease;
+}
+
+
+.game-board {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0.7rem;
+	padding: 0.9rem;
+	max-width: clamp(360px, 82vw, 660px);
+	margin: 0 auto;
+	border-radius: 12px;
+	background: var(--board-bg);
+	border: 2px solid rgba(0, 51, 102, 0.24);
+	box-shadow: 0 14px 30px rgba(26, 26, 26, 0.1);
+}
+
+.memory-card {
+	border: 0;
+	background: transparent;
+	padding: 0;
+	perspective: 900px;
+	aspect-ratio: 1 / 1;
+	cursor: pointer;
+	outline-offset: 2px;
+}
+
+.memory-card:focus-visible {
+	outline: 3px solid var(--cw-yellow);
+}
+
+.memory-card:disabled {
+	cursor: default;
+}
+
+.card-inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transition: transform 0.45s ease;
+	transform-style: preserve-3d;
+}
+
+.memory-card.flipped .card-inner {
+	transform: rotateY(180deg);
+}
+
+.card-face {
+	position: absolute;
+	inset: 0;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0.5rem;
+	backface-visibility: hidden;
+	font-weight: 700;
+}
+
+.card-front {
+	background: #ffffff;
+	border: 2px solid rgba(119, 168, 187, 0.7);
+	color: var(--cw-blue);
+	transform: rotateY(180deg);
+}
+
+.card-back {
+	/* Black background is explicitly approved in the charity: water logo usage guide */
+	background: var(--cw-black);
+	border: 2px solid var(--cw-yellow);
+	color: white;
+}
+
+/* Water can displayed on the face-down side of every card */
+/* No filter applied — matches the natural colors of the floating can at the bottom */
+.card-back-logo {
+	width: 72%;
+	max-width: 100px;
+	height: auto;
+	object-fit: contain;
+}
+
+.card-icon {
+	font-size: clamp(1.03rem, 2.2vw, 1.48rem);
+	margin-bottom: 0.25rem;
+}
+
+.card-name {
+	font-size: clamp(0.6rem, 1.2vw, 0.82rem);
+	line-height: 1.1;
+	text-align: center;
+}
+
+.memory-card.matched .card-front {
+	border-color: var(--cw-yellow);
+	box-shadow: 0 0 0 3px rgba(255, 201, 7, 0.28) inset;
+}
+
+.snippet-panel {
+	min-height: 112px;
+	max-width: clamp(320px, 75vw, 600px);
+	margin: 0 auto;
+	text-align: center;
+	border-radius: 10px;
+	background: var(--cw-cream);
+	border: 2px solid rgba(255, 201, 7, 0.62);
+	padding: 0.98rem 1.08rem;
+	font-size: 1.03rem;
+	line-height: 1.43;
+	box-shadow: 0 8px 22px rgba(26, 26, 26, 0.1);
+}
+
+.water-can {
+	max-width: 88px;
+	opacity: 0.88;
+	animation: floatCan 4s ease-in-out infinite;
+}
+
+.win-celebration {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 1rem;
+	background: rgba(0, 30, 60, 0.68);
+	backdrop-filter: blur(2px);
+	z-index: 1000;
+}
+
+.celebration-card {
+	position: relative;
+	z-index: 2;
+	max-width: 460px;
+	width: min(92vw, 460px);
+	background: #ffffff;
+	border: 3px solid var(--cw-yellow);
+	border-radius: 14px;
+	padding: 1.1rem 1.05rem;
+	text-align: center;
+	box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+	animation: celebrationPop 0.45s ease;
+}
+
+.celebration-badge {
+	display: inline-block;
+	padding: 0.28rem 0.6rem;
+	border-radius: 999px;
+	background: var(--cw-yellow);
+	font-size: 0.78rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: var(--cw-black);
+}
+
+.celebration-title {
+	color: var(--cw-blue);
+	font-weight: 800;
+	font-size: clamp(1.35rem, 3.6vw, 1.95rem);
+}
+
+.confetti-layer {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	z-index: 1;
+}
+
+.confetti-piece {
+	position: absolute;
+	top: -10vh;
+	width: 10px;
+	height: 16px;
+	border-radius: 2px;
+	opacity: 0.95;
+	animation: confettiFall linear forwards;
+}
+
+.btn-warning {
+	background-color: var(--cw-yellow);
+	border-color: #d6aa00;
+	color: var(--cw-black);
+	font-weight: 700;
+}
+
+.btn-warning:hover {
+	background-color: #eeb900;
+	border-color: #cfa400;
+	color: var(--cw-black);
+}
+
+.btn-outline-primary {
+	border-color: var(--cw-blue);
+	color: var(--cw-blue);
+}
+
+.btn-outline-primary:hover {
+	background-color: var(--cw-blue);
+	border-color: var(--cw-blue);
+}
+
+.snippet-flash {
+	animation: flashPanel 0.6s ease;
+}
+
+@keyframes flashPanel {
+	0% {
+		background: #fff3b8;
+	}
+	100% {
+		background: var(--cw-cream);
+	}
+}
+
+@keyframes floatCan {
+	0% {
+		transform: translateY(0px);
+	}
+	50% {
+		transform: translateY(-7px);
+	}
+	100% {
+		transform: translateY(0px);
+	}
+}
+
+@keyframes pop {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.22);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes celebrationPop {
+	0% {
+		transform: scale(0.82);
+		opacity: 0;
+	}
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+@keyframes confettiFall {
+	0% {
+		transform: translateY(-10vh) rotate(0deg);
+		opacity: 0.95;
+	}
+	100% {
+		transform: translateY(115vh) rotate(560deg);
+		opacity: 0.95;
+	}
+}
+
+
+@media (max-width: 576px) {
+	.container {
+		padding-left: 0.6rem;
+		padding-right: 0.6rem;
+	}
+
+	.game-title {
+		font-size: 1.28rem;
+	}
+
+	.lead {
+		font-size: 0.86rem;
+	}
+
+	.info-label {
+		font-size: 0.72rem;
+	}
+
+	.info-value {
+		font-size: 1.15rem;
+	}
+
+	.game-board {
+		gap: 0.52rem;
+		padding: 0.68rem;
+		max-width: 460px;
+	}
+
+	.card-icon {
+		font-size: 0.95rem;
+	}
+
+	.card-name {
+		font-size: 0.54rem;
+	}
+
+	.snippet-panel {
+		min-height: 90px;
+		max-width: 460px;
+		padding: 0.74rem 0.84rem;
+		font-size: 0.92rem;
+		line-height: 1.3;
+	}
+
+	.water-can {
+		max-width: 74px;
+	}
+
+	.celebration-card {
+		padding: 0.95rem 0.8rem;
+	}
+
+	.confetti-piece {
+		width: 8px;
+		height: 12px;
+	}
+}
+
+@media (max-height: 760px) {
+	main.container {
+		padding-top: 0.45rem !important;
+		padding-bottom: 0.45rem !important;
+	}
+
+	header {
+		margin-bottom: 0.45rem !important;
+	}
+
+	.lead {
+		display: none;
+	}
+
+	.info-card {
+		padding: 0.45rem;
+	}
+
+	.game-board {
+		gap: 0.36rem;
+		padding: 0.46rem;
+		max-width: 372px;
+	}
+
+	.snippet-panel {
+		min-height: 78px;
+		max-width: 372px;
+		padding: 0.62rem 0.7rem;
+		font-size: 0.86rem;
+		line-height: 1.25;
+	}
+}
