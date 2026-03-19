@@ -285,7 +285,7 @@ h1, h2, h3, h4, h5, h6 {
 	background: #5fa9df;
 	border: 1.2px solid var(--cw-blue);
 	border-radius: 55% 55% 55% 0;
-	transform: rotate(-45deg);
+	transform: rotate(135deg);
 	display: inline-block;
 	margin-left: 1px;
 }
