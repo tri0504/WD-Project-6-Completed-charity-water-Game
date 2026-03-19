@@ -50,6 +50,34 @@ const solutions = [
 	}
 ];
 
+// Difficulty mode settings that change gameplay rules and goals.
+const difficultySettings = {
+	easy: {
+		name: "Easy",
+		pairsToMatch: 4,
+		pointsPerMatch: 10,
+		solutionCount: 4,
+		timeLimit: 120
+	},
+	normal: {
+		name: "Normal",
+		pairsToMatch: 8,
+		pointsPerMatch: 10,
+		solutionCount: 8,
+		timeLimit: 90
+	},
+	hard: {
+		name: "Hard",
+		pairsToMatch: 8,
+		pointsPerMatch: 15,
+		solutionCount: 8,
+		timeLimit: 60
+	}
+};
+
+// Current selected difficulty mode (default is normal).
+let currentDifficulty = "normal";
+
 // Grab important elements from the page so JavaScript can update them later.
 const boardElement = document.getElementById("game-board");
 const scoreElement = document.getElementById("score");
@@ -62,21 +90,33 @@ const finalScoreElement = document.getElementById("final-score");
 const finalTimeElement = document.getElementById("final-time");
 const resetGameButton = document.getElementById("reset-game");
 
+// Grab difficulty buttons to add click handlers.
+const difficultyEasyButton = document.getElementById("difficulty-easy");
+const difficultyNormalButton = document.getElementById("difficulty-normal");
+const difficultyHardButton = document.getElementById("difficulty-hard");
+
 // Game state variables that change while the player is playing.
 let deck = [];
 let flippedCards = [];
 let matchedPairs = 0;
 let score = 0;
 let secondsElapsed = 0;
+let timeRemaining = 0;
 let timerId = null;
 let lockBoard = false;
 let gameStarted = false;
 let confettiClearId = null;
 
-// Create two cards for each solution so every theme has a pair.
+// Create two cards for each solution so every theme has a pair based on current difficulty.
 function createDeck() {
+	// Get the difficulty settings to determine how many solutions to use.
+	const settings = difficultySettings[currentDifficulty];
+	
+	// Select only the solutions needed for the current difficulty level.
+	const selectedSolutions = solutions.slice(0, settings.solutionCount);
+	
 	// flatMap lets us return two cards (a pair) for every one solution object.
-	const pairs = solutions.flatMap((solution) => {
+	const pairs = selectedSolutions.flatMap((solution) => {
 		return [
 			{ ...solution, uniqueId: `${solution.id}-a` },
 			{ ...solution, uniqueId: `${solution.id}-b` }
@@ -208,15 +248,22 @@ function handleMatch(firstCard, secondCard) {
 	firstCard.disabled = true;
 	secondCard.disabled = true;
 
-	// Update progress and score.
+	// Update progress and score based on current difficulty.
 	matchedPairs += 1;
-	score += 10;
+	const pointsAwarded = difficultySettings[currentDifficulty].pointsPerMatch;
+	score += pointsAwarded;
 
 	// Refresh UI and check if the game is complete.
 	updateScore();
 	showSnippet(firstCard.dataset.id);
 	resetTurn();
 	checkWin();
+	
+	// After a brief delay, trigger the disappear animation and remove cards from the board.
+	setTimeout(() => {
+		firstCard.classList.add("disappearing");
+		secondCard.classList.add("disappearing");
+	}, 800);
 }
 
 // Handle a failed pair by flipping both cards back after a delay.
@@ -269,13 +316,30 @@ function formatTime(totalSeconds) {
 	return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-// Start (or restart) the one-second game timer.
+// Start (or restart) the one-second game timer with difficulty-based time limit.
 function startTimer() {
 	// Prevent duplicate intervals by stopping any existing timer first.
 	stopTimer();
+	
+	// Set time remaining based on current difficulty.
+	const timeLimit = difficultySettings[currentDifficulty].timeLimit;
+	timeRemaining = timeLimit;
+	
 	timerId = setInterval(() => {
-		secondsElapsed += 1;
-		timerElement.textContent = formatTime(secondsElapsed);
+		timeRemaining -= 1;
+		timerElement.textContent = formatTime(timeRemaining);
+		
+		// Add warning color when time is running low (under 10 seconds).
+		if (timeRemaining <= 10 && timeRemaining > 0) {
+			timerElement.parentElement.style.color = "#d32f2f";
+		} else {
+			timerElement.parentElement.style.color = "";
+		}
+		
+		// If time runs out, end the game as a loss.
+		if (timeRemaining <= 0) {
+			handleTimeOut();
+		}
 	}, 1000);
 }
 
@@ -285,6 +349,21 @@ function stopTimer() {
 		clearInterval(timerId);
 		timerId = null;
 	}
+	// Reset timer color warning.
+	timerElement.parentElement.style.color = "";
+}
+
+// Handle when time runs out during the game.
+function handleTimeOut() {
+	stopTimer();
+	gameStarted = false;
+	lockBoard = true;
+	
+	// Show timeout message and hide the win celebration, use the snippet panel instead.
+	snippetPanel.textContent = "⏰ Time's up! Game Over. Click Reset to try again or choose a different difficulty.";
+	snippetPanel.style.color = "#d32f2f";
+	snippetPanel.style.backgroundColor = "#ffe0e0";
+	snippetPanel.style.borderColor = "#d32f2f";
 }
 
 // Build one burst of confetti using simple DOM elements.
@@ -333,8 +412,11 @@ function hideWinCelebration() {
 
 // If all pairs are matched, show final score/time in the win modal.
 function checkWin() {
-	// Exit early until every solution pair is matched.
-	if (matchedPairs !== solutions.length) {
+	// Get the number of pairs to match based on current difficulty.
+	const pairsNeeded = difficultySettings[currentDifficulty].pairsToMatch;
+	
+	// Exit early until all required pairs are matched for the current difficulty.
+	if (matchedPairs !== pairsNeeded) {
 		return;
 	}
 
@@ -361,11 +443,40 @@ function resetGame() {
 
 	// Reset on-screen labels and helper text.
 	scoreElement.textContent = "0";
-	timerElement.textContent = "00:00";
+	timeRemaining = difficultySettings[currentDifficulty].timeLimit;
+	timerElement.textContent = formatTime(timeRemaining);
+	timerElement.parentElement.style.color = "";
+	
+	// Reset snippet panel styling.
 	snippetPanel.textContent = "Click any card to start the game. Match a pair to reveal a clean water solution fact.";
+	snippetPanel.style.color = "";
+	snippetPanel.style.backgroundColor = "";
+	snippetPanel.style.borderColor = "";
 
 	// Draw fresh cards and wait for the player's first card click.
 	renderBoard();
+}
+
+// Update the active difficulty button visual state.
+function updateDifficultyDisplay() {
+	difficultyEasyButton.classList.remove("active");
+	difficultyNormalButton.classList.remove("active");
+	difficultyHardButton.classList.remove("active");
+
+	if (currentDifficulty === "easy") {
+		difficultyEasyButton.classList.add("active");
+	} else if (currentDifficulty === "normal") {
+		difficultyNormalButton.classList.add("active");
+	} else if (currentDifficulty === "hard") {
+		difficultyHardButton.classList.add("active");
+	}
+}
+
+// Change difficulty and reset the game.
+function setDifficulty(newDifficulty) {
+	currentDifficulty = newDifficulty;
+	updateDifficultyDisplay();
+	resetGame();
 }
 
 // "Play Again" closes the celebration overlay and resets to ready-to-start.
@@ -375,5 +486,11 @@ playAgainButton.addEventListener("click", () => {
 
 resetGameButton.addEventListener("click", resetGame);
 
+// Add click handlers for difficulty buttons.
+difficultyEasyButton.addEventListener("click", () => setDifficulty("easy"));
+difficultyNormalButton.addEventListener("click", () => setDifficulty("normal"));
+difficultyHardButton.addEventListener("click", () => setDifficulty("hard"));
+
 // Start the first game when the page loads.
+updateDifficultyDisplay();
 resetGame();
